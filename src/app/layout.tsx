@@ -4,16 +4,21 @@ import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
 
+import type { Viewport } from "next"
+
 export const metadata: Metadata = {
   title: "SDE Journey — Placement Command Center",
   description: "Personal productivity and career tracker for 2027 SDE placements.",
   manifest: "/manifest.json",
-  themeColor: "#000000",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "SDE Journey",
   },
+}
+
+export const viewport: Viewport = {
+  themeColor: "#000000",
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
