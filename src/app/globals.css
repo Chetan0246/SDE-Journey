@@ -1,0 +1,219 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: hsl(224 71% 4%);
+  --color-foreground: hsl(213 31% 91%);
+  --color-card: hsl(224 71% 6%);
+  --color-card-foreground: hsl(213 31% 91%);
+  --color-primary: hsl(210 100% 66%);
+  --color-primary-foreground: hsl(222 47% 11%);
+  --color-secondary: hsl(222 47% 11%);
+  --color-secondary-foreground: hsl(213 31% 91%);
+  --color-muted: hsl(223 47% 11%);
+  --color-muted-foreground: hsl(215 20% 55%);
+  --color-accent: hsl(216 34% 17%);
+  --color-accent-foreground: hsl(210 40% 98%);
+  --color-destructive: hsl(0 63% 31%);
+  --color-destructive-foreground: hsl(210 40% 98%);
+  --color-border: hsl(216 34% 17%);
+  --color-input: hsl(216 34% 17%);
+  --color-ring: hsl(210 100% 66%);
+  --radius: 0.75rem;
+}
+
+@layer base {
+  :root { color-scheme: dark; }
+
+  .light {
+    --color-background: hsl(0 0% 98%);
+    --color-foreground: hsl(222 47% 11%);
+    --color-card: hsl(0 0% 100%);
+    --color-card-foreground: hsl(222 47% 11%);
+    --color-primary: hsl(210 100% 56%);
+    --color-primary-foreground: hsl(0 0% 100%);
+    --color-secondary: hsl(210 40% 96%);
+    --color-secondary-foreground: hsl(222 47% 11%);
+    --color-muted: hsl(210 40% 96%);
+    --color-muted-foreground: hsl(215 20% 45%);
+    --color-accent: hsl(210 40% 94%);
+    --color-accent-foreground: hsl(222 47% 11%);
+    --color-destructive: hsl(0 84% 60%);
+    --color-destructive-foreground: hsl(0 0% 98%);
+    --color-border: hsl(214 32% 91%);
+    --color-input: hsl(214 32% 91%);
+    --color-ring: hsl(210 100% 56%);
+    color-scheme: light;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+.glass-card {
+  border-radius: 0.75rem;
+  border: 1px solid rgb(from var(--color-border) r g b / 0.5);
+  background-color: rgb(from var(--color-card) r g b / 0.6);
+  backdrop-filter: blur(8px);
+}
+
+.gradient-text {
+  background: linear-gradient(to right, var(--color-primary), hsl(217 91% 70%));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.page-container {
+  max-width: 80rem;
+  margin-inline: auto;
+  padding: 1.5rem 1rem;
+}
+
+@media (width >= 640px) { .page-container { padding: 1.5rem 1.5rem; } }
+@media (width >= 1024px) { .page-container { padding: 1.5rem 2rem; } }
+
+.section-heading {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.metric-card {
+  border-radius: 0.75rem;
+  border: 1px solid rgb(from var(--color-border) r g b / 0.5);
+  background-color: rgb(from var(--color-card) r g b / 0.6);
+  backdrop-filter: blur(8px);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 200ms;
+  text-decoration: none;
+  width: 100%;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: inherit;
+}
+
+.nav-item-active {
+  background-color: rgb(from var(--color-primary) r g b / 0.1);
+  color: var(--color-primary);
+}
+
+.nav-item-inactive { color: var(--color-muted-foreground); }
+.nav-item-inactive:hover { background-color: var(--color-accent); color: var(--color-foreground); }
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--color-primary);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-primary-foreground);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
+  transition: all 200ms;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.btn-primary:hover { background-color: rgb(from var(--color-primary) r g b / 0.85); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-card);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-foreground);
+  transition: all 200ms;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.btn-secondary:hover { background-color: var(--color-accent); }
+.btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.form-input {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-card);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-foreground);
+  transition: border-color 200ms, box-shadow 200ms;
+  outline: none;
+  font-family: inherit;
+}
+
+.form-input::placeholder { color: var(--color-muted-foreground); }
+
+.form-input:focus {
+  border-color: var(--color-ring);
+  box-shadow: 0 0 0 3px rgb(from var(--color-ring) r g b / 0.15);
+}
+
+select.form-input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpolyline points='6,9 12,15 18,9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  padding-right: 2rem;
+}
+
+textarea.form-input { resize: vertical; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.badge-easy { background-color: hsl(160 84% 39% / 0.1); color: hsl(160 84% 60%); }
+.badge-medium { background-color: hsl(45 93% 47% / 0.1); color: hsl(45 93% 65%); }
+.badge-hard { background-color: hsl(0 84% 60% / 0.1); color: hsl(0 84% 70%); }
+.badge-completed { background-color: hsl(160 84% 39% / 0.1); color: hsl(160 84% 60%); }
+.badge-partial { background-color: hsl(210 100% 60% / 0.1); color: hsl(210 100% 70%); }
+.badge-skipped { background-color: hsl(45 93% 47% / 0.1); color: hsl(45 93% 65%); }
+.badge-rescheduled { background-color: hsl(270 80% 65% / 0.1); color: hsl(270 80% 75%); }
+
+.animate-fade-in { animation: fadeIn 0.3s ease-in-out; }
+.animate-slide-up { animation: slideUp 0.3s ease-out; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
