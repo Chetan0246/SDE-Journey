@@ -1,7 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useCallback } from "react"
 import { Plus, Trash2, GripVertical, Save, Loader2, CalendarDays } from "lucide-react"
 import { todayStr, formatDisplayDate } from "@/lib/utils"
 import { getTasks, saveTasks, upsertPlan, getPlan, type Task, type TaskCategory } from "@/lib/store"
@@ -17,15 +16,15 @@ const BLANK_TASK = (): Omit<Task,"id"|"sort_order"> => ({
 })
 
 export default function PlanPage() {
-  const router = useRouter()
   const [date, setDate] = useState(todayStr())
-  const [tasks, setTasks] = useState<Task[]>([])
+  const [tasks, setTasks] = useState<Task[]>(() => getTasks(todayStr()))
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
-  useEffect(() => {
-    setTasks(getTasks(date))
-  }, [date])
+  const handleDateChange = useCallback((newDate: string) => {
+    setDate(newDate)
+    setTasks(getTasks(newDate))
+  }, [])
 
   function addTask() {
     const t: Task = { ...BLANK_TASK(), id: crypto.randomUUID(), sort_order: tasks.length }
@@ -69,7 +68,7 @@ export default function PlanPage() {
         </div>
         <div className="flex items-center gap-3">
           <input type="date" className="form-input w-auto text-sm" value={date}
-            onChange={(e) => setDate(e.target.value)} id="plan-date" />
+            onChange={(e) => handleDateChange(e.target.value)} id="plan-date" />
           <button onClick={handleSave} className={`btn-primary gap-2 ${saved ? "opacity-90" : ""}`}
             disabled={saving} id="save-plan-btn">
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}

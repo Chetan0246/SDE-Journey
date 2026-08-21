@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useCallback } from "react"
 import { ChevronRight, ChevronLeft, Loader2, Check } from "lucide-react"
 import { todayStr, formatDisplayDate } from "@/lib/utils"
-import { getReview, saveReview, getTasks, getTaskLogs, type DailyReview } from "@/lib/store"
+import { getReview, saveReview, getTaskLogs, type DailyReview } from "@/lib/store"
 
 const STEPS = [
   { id: "most_valuable", label: "Most valuable task today?", placeholder: "What was the single most important thing you completed?" },
@@ -34,17 +34,21 @@ const BLANK = (): DailyReview => ({
 export default function ReflectPage() {
   const [date, setDate] = useState(todayStr())
   const [step, setStep] = useState(0)
-  const [review, setReview] = useState<DailyReview>(BLANK())
+  const [review, setReview] = useState<DailyReview>(() => {
+    const today = todayStr()
+    return getReview(today) ?? { ...BLANK(), date: today }
+  })
   const [aiLoading, setAiLoading] = useState(false)
   const [saved, setSaved] = useState(false)
 
   const TOTAL_STEPS = STEPS.length + 1 // +1 for scores
 
-  useEffect(() => {
-    const existing = getReview(date)
-    setReview(existing ?? { ...BLANK(), date })
-    setStep(0); setSaved(false)
-  }, [date])
+  const handleDateChange = useCallback((newDate: string) => {
+    setDate(newDate)
+    setReview(getReview(newDate) ?? { ...BLANK(), date: newDate })
+    setStep(0)
+    setSaved(false)
+  }, [])
 
   function setValue(field: keyof DailyReview, value: unknown) {
     setReview((r) => ({ ...r, [field]: value }))

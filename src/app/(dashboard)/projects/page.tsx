@@ -1,21 +1,22 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Plus, CheckCircle2, Circle, Clock, Trash2 } from "lucide-react"
 import { getProjects, saveProjects, type Project } from "@/lib/store"
 import { cn } from "@/lib/utils"
 
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>([])
-  const [selected, setSelected] = useState<string | null>(null)
+  const [projects, setProjects] = useState<Project[]>(() => {
+    if (typeof window === "undefined") return []
+    return getProjects()
+  })
+  const [selected, setSelected] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null
+    const p = getProjects()
+    return p.length > 0 ? p[0].id : null
+  })
   const [newName, setNewName] = useState("")
   const [newTask, setNewTask] = useState("")
-
-  useEffect(() => {
-    const p = getProjects()
-    setProjects(p)
-    if (p.length > 0) setSelected(p[0].id)
-  }, [])
 
   function save(p: Project[]) { setProjects(p); saveProjects(p) }
 
