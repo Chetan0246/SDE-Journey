@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 
-// Rename to 'middleware' instead of 'proxy' as that's the Next.js convention
-export function middleware(req: NextRequest) {
+// Export must be named 'proxy'
+export function proxy(req: NextRequest) {
   const authUser = process.env.BASIC_AUTH_USER
   const authPass = process.env.BASIC_AUTH_PASS
 
