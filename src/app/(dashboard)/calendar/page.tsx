@@ -12,9 +12,10 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function CalendarPage() {
   const [currentMonth, setCurrentMonth] = useState(new Date())
-  const [plans, setPlans] = useState<Record<string, DailyPlan>>({})
-
-  useEffect(() => { setPlans(getPlans()) }, [])
+  const [plans, setPlans] = useState<Record<string, DailyPlan>>(() => {
+    if (typeof window === "undefined") return {}
+    return getPlans()
+  })
 
   const monthStart = startOfMonth(currentMonth)
   const monthEnd = endOfMonth(currentMonth)

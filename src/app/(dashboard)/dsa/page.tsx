@@ -18,19 +18,18 @@ const DIFF_COLOR: Record<string, string> = {
 }
 
 export default function DSAPage() {
-  const [problems, setProblems] = useState<DSAProblem[]>([])
-  const [selectedTopic, setSelectedTopic] = useState<DSATopic | "All">("All")
-  const [search, setSearch] = useState("")
-  const [expanded, setExpanded] = useState<string | null>(null)
-
-  useEffect(() => {
+  const [problems, setProblems] = useState<DSAProblem[]>(() => {
+    if (typeof window === "undefined") return []
     let p = getDSAProblems()
     if (p.length === 0) {
       p = buildNeetCode150()
       saveDSAProblems(p)
     }
-    setProblems(p)
-  }, [])
+    return p
+  })
+  const [selectedTopic, setSelectedTopic] = useState<DSATopic | "All">("All")
+  const [search, setSearch] = useState("")
+  const [expanded, setExpanded] = useState<string | null>(null)
 
   function toggleSolved(id: string) {
     const p = problems.find((x) => x.id === id)
