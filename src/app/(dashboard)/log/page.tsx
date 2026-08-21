@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useCallback } from "react"
 import { CheckCircle2, Clock, XCircle, RotateCcw, Plus, Save, Loader2, Trash2, AlertTriangle } from "lucide-react"
 import { todayStr, formatDisplayDate, minutesToHours } from "@/lib/utils"
 import {
@@ -56,16 +56,28 @@ function saveWaste(date: string, entries: WasteEntry[]) {
 
 export default function LogPage() {
   const [date, setDate] = useState(todayStr())
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [logs, setLogs] = useState<TaskLog[]>([])
-  const [waste, setWaste] = useState<WasteEntry[]>([])
+  const [tasks, setTasks] = useState<Task[]>(() => getTasks(todayStr()))
+  const [logs, setLogs] = useState<TaskLog[]>(() => {
+    const d = todayStr()
+    const t = getTasks(d)
+    const existing = getTaskLogs(d)
+    if (existing.length > 0) return existing
+    return t.map((task) => ({
+      task_id: task.id, name: task.name, category: task.category,
+      status: "completed" as TaskStatus,
+      actual_duration: task.estimated_duration,
+      completion_percent: 100, is_unplanned: false,
+    }))
+  })
+  const [waste, setWaste] = useState<WasteEntry[]>(() => loadWaste(todayStr()))
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
-  useEffect(() => {
-    const t = getTasks(date)
+  const handleDateChange = useCallback((newDate: string) => {
+    setDate(newDate)
+    const t = getTasks(newDate)
     setTasks(t)
-    const existing = getTaskLogs(date)
+    const existing = getTaskLogs(newDate)
     if (existing.length > 0) {
       setLogs(existing)
     } else {
@@ -76,8 +88,8 @@ export default function LogPage() {
         completion_percent: 100, is_unplanned: false,
       })))
     }
-    setWaste(loadWaste(date))
-  }, [date])
+    setWaste(loadWaste(newDate))
+  }, [])
 
   function updateLog(idx: number, field: keyof TaskLog, value: unknown) {
     setLogs(logs.map((l, i) => (i === idx ? { ...l, [field]: value } : l)))
@@ -135,7 +147,7 @@ export default function LogPage() {
         </div>
         <div className="flex items-center gap-3">
           <input type="date" className="form-input w-auto text-sm" value={date}
-            onChange={(e) => setDate(e.target.value)} id="log-date" />
+            onChange={(e) => handleDateChange(e.target.value)} id="log-date" />
           <button onClick={handleSave} disabled={saving}
             className={`btn-primary gap-2 ${saved ? "opacity-90" : ""}`} id="save-log-btn">
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}

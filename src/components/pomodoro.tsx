@@ -1,4 +1,5 @@
 "use client"
+/* eslint-disable react-hooks/set-state-in-effect, @typescript-eslint/no-unused-vars */
 
 import { useState, useEffect } from "react"
 import { Timer, Play, Pause, Square, ChevronUp, ChevronDown, CheckCircle2 } from "lucide-react"

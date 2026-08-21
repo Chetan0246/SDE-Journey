@@ -103,7 +103,7 @@ Tasks done today: ${taskLogs.map((l) => `${l.name}(${l.status},${l.actual_durati
           <p className="text-sm mt-0.5" style={{ color: "var(--color-muted-foreground)" }}>{formatDisplayDate(date)}</p>
         </div>
         <input type="date" className="form-input w-auto text-sm" value={date}
-          onChange={(e) => setDate(e.target.value)} id="reflect-date" />
+          onChange={(e) => handleDateChange(e.target.value)} id="reflect-date" />
       </div>
 
       {/* Progress */}
