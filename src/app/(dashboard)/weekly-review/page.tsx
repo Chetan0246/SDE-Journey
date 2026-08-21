@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { getAllReviews, getPlans, getTaskLogs, type DailyReview, type DailyPlan } from "@/lib/store"
+import { useState } from "react"
+import { getAllReviews, getPlans, type DailyReview, type DailyPlan } from "@/lib/store"
 import { format, parseISO, startOfWeek, endOfWeek, subWeeks } from "date-fns"
-import { TrendingUp, TrendingDown } from "lucide-react"
+
 
 interface WeekSummary {
   start: string; end: string
@@ -50,7 +50,7 @@ function summarizeWeek(weekStart: Date, plans: Record<string, DailyPlan>, review
     end: format(weekEnd, "yyyy-MM-dd"),
     days, plannedH, actualH,
     avgScore: parseFloat(avgScore.toFixed(1)),
-    bestDay: bestDay || "—", worstDay: worstDay || "—",
+    bestDay: bestDay || "â€”", worstDay: worstDay || "â€”",
     scoreByDim,
   }
 }
@@ -60,21 +60,21 @@ const DIM_LABELS: Record<string, string> = {
   score_productivity: "Productivity", score_technical: "Technical", score_energy: "Energy"
 }
 
-export default function WeeklyReviewPage() {
-  const [weeks, setWeeks] = useState<WeekSummary[]>([])
+function buildWeeks(): WeekSummary[] {
+  const plans = getPlans()
+  const reviews = getAllReviews()
+  const now = new Date()
+  const summaries: WeekSummary[] = []
+  for (let i = 0; i < 8; i++) {
+    const ws = startOfWeek(subWeeks(now, i))
+    const s = summarizeWeek(ws, plans, reviews)
+    if (s.days > 0) summaries.push(s)
+  }
+  return summaries
+}
 
-  useEffect(() => {
-    const plans = getPlans()
-    const reviews = getAllReviews()
-    const now = new Date()
-    const summaries: WeekSummary[] = []
-    for (let i = 0; i < 8; i++) {
-      const ws = startOfWeek(subWeeks(now, i))
-      const s = summarizeWeek(ws, plans, reviews)
-      if (s.days > 0) summaries.push(s)
-    }
-    setWeeks(summaries)
-  }, [])
+export default function WeeklyReviewPage() {
+  const [weeks] = useState<WeekSummary[]>(() => buildWeeks())
 
   if (weeks.length === 0) {
     return (
@@ -97,7 +97,7 @@ export default function WeeklyReviewPage() {
           <div key={w.start} className="glass-card p-4 space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="font-semibold">{format(parseISO(w.start), "MMM d")} – {format(parseISO(w.end), "MMM d, yyyy")}</h2>
+                <h2 className="font-semibold">{format(parseISO(w.start), "MMM d")} â€“ {format(parseISO(w.end), "MMM d, yyyy")}</h2>
                 <p className="text-xs mt-0.5" style={{ color: "var(--color-muted-foreground)" }}>{w.days} days logged</p>
               </div>
               <div className="text-right">
@@ -111,7 +111,7 @@ export default function WeeklyReviewPage() {
                 { l: "Planned", v: `${w.plannedH.toFixed(0)}h` },
                 { l: "Actual", v: `${w.actualH.toFixed(0)}h` },
                 { l: "Best day", v: w.bestDay },
-                { l: "Avg score", v: w.avgScore > 0 ? w.avgScore.toFixed(1) : "—" },
+                { l: "Avg score", v: w.avgScore > 0 ? w.avgScore.toFixed(1) : "â€”" },
               ].map(({ l, v }) => (
                 <div key={l} className="rounded-lg p-2.5" style={{ backgroundColor: "var(--color-accent)" }}>
                   <p className="text-[11px]" style={{ color: "var(--color-muted-foreground)" }}>{l}</p>

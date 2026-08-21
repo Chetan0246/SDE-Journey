@@ -1,16 +1,13 @@
 import { GoogleGenerativeAI } from "@google/generative-ai"
 import { NextResponse } from "next/server"
-import { cookies } from "next/headers"
-
-function checkAccess(): boolean {
-  // We use a server-side cookie check here since this is an API route
-  return true // proxy.ts already guards the app; API routes trust the session
-}
 
 export async function POST(req: Request) {
   const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey || apiKey === "your-gemini-api-key-here") {
-    return NextResponse.json({ error: "GEMINI_API_KEY not configured. Add it to .env.local." }, { status: 503 })
+    return NextResponse.json(
+      { error: "GEMINI_API_KEY not configured. Add it to .env.local." },
+      { status: 503 }
+    )
   }
 
   const body = await req.json() as { type: string; prompt: string }
@@ -24,14 +21,15 @@ export async function POST(req: Request) {
     const genAI = new GoogleGenerativeAI(apiKey)
     const model = genAI.getGenerativeModel({ model: "gemini-flash-lite-latest" })
 
-    const systemPrompt = type === "brutal_reality"
-      ? `You are a strict, data-driven career advisor reviewing an SDE placement candidate's actual performance data. 
-Speak directly, like a senior engineer mentoring a junior. 
+    const systemPrompt =
+      type === "brutal_reality"
+        ? `You are a strict, data-driven career advisor reviewing an SDE placement candidate'\''s actual performance data.
+Speak directly, like a senior engineer mentoring a junior.
 NEVER use motivational quotes. NEVER make up data not provided.
 ONLY reference the exact numbers given. Be honest about gaps.
 Format your response in 3 short paragraphs: (1) Current trajectory verdict, (2) Biggest risks, (3) One specific correction.
 Each paragraph max 3 sentences.`
-      : `You are a strict but rational SDE career mentor. 
+        : `You are a strict but rational SDE career mentor.
 Analyze only the data given. No motivational filler. No invented achievements.
 Give 3 specific, actionable recommendations based purely on patterns in the data.`
 

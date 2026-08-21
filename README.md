@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SDE Journey — Placement Command Center
 
-## Getting Started
+A personal, local-first productivity tracker built for engineering placement preparation (target: Aug 21, 2027).
 
-First, run the development server:
+## Stack
+
+- **Framework**: Next.js 16 (App Router, Turbopack)
+- **Styling**: Tailwind CSS v4 — dark mode only
+- **Database**: Browser `localStorage` — zero backend, zero setup
+- **AI**: Google Gemini (`gemini-flash-lite-latest`) for daily reviews and the Brutal Reality projection
+- **Auth**: Single access key (no accounts, no cloud)
+
+## Features
+
+| Page | What it does |
+|------|-------------|
+| `/dashboard` | Daily overview — hours, DSA progress, streak, placement countdown |
+| `/plan` | Plan your day with time blocks and categories |
+| `/log` | Log actual time vs planned, mark tasks complete/partial/skipped |
+| `/reflect` | 5-step daily reflection wizard with Gemini AI review |
+| `/brutal-reality` | **Data-driven projection**: if you keep going like this, where will you end up? |
+| `/dsa` | Full NeetCode 150 tracker — topics, difficulty, confidence, notes |
+| `/projects` | Kanban board for portfolio projects |
+| `/analytics` | Charts — reality vs plan, time by category, DSA by topic |
+| `/calendar` | Monthly heat map of logged days |
+| `/weekly-review` | Auto-generated weekly performance summary |
+| `/settings` | Update skills/goals, export & import JSON backup |
+
+## Setup
 
 ```bash
+# 1. Clone
+git clone https://github.com/Chetan0246/SDE-Journey.git
+cd SDE-Journey
+
+# 2. Install
+npm install
+
+# 3. Configure
+cp .env.example .env.local
+# Edit .env.local:
+#   ACCESS_KEY=your-private-key
+#   GEMINI_API_KEY=your-gemini-api-key   # get one free at aistudio.google.com
+
+# 4. Run
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) and enter your access key.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Architecture
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/
+│   ├── (dashboard)/        # All protected pages
+│   │   ├── brutal-reality/ # ⭐ The projection engine
+│   │   ├── dashboard/
+│   │   ├── dsa/
+│   │   ├── plan/
+│   │   ├── log/
+│   │   ├── reflect/
+│   │   ├── projects/
+│   │   ├── analytics/
+│   │   ├── calendar/
+│   │   ├── weekly-review/
+│   │   └── settings/
+│   ├── access/             # Login page (access key)
+│   └── api/
+│       ├── access/         # Sets cookie on valid key
+│       └── ai/             # Gemini proxy
+├── components/
+│   └── layout/sidebar.tsx
+├── lib/
+│   ├── store.ts            # All localStorage CRUD + hooks
+│   ├── neetcode-150.ts     # 150 pre-seeded DSA problems
+│   └── utils.ts
+└── proxy.ts                # Next.js middleware — access key guard
+```
 
-## Learn More
+## Data
 
-To learn more about Next.js, take a look at the following resources:
+All data lives in your browser (`localStorage`). Nothing is sent to any server except AI prompts sent to the Gemini API.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Use **Settings → Export JSON** to back up your data. Use **Import JSON** to restore it on a new device.

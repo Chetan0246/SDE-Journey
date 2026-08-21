@@ -1,17 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Save, Download, Upload, Loader2, Check } from "lucide-react"
 import { getProfile, saveProfile, exportAllData, importAllData, DEFAULT_SKILLS, type Profile } from "@/lib/store"
 
 export default function SettingsPage() {
-  const [profile, setProfile] = useState<Profile | null>(null)
+  const [profile, setProfile] = useState<Profile>(() => getProfile())
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
-
-  useEffect(() => { setProfile(getProfile()) }, [])
-
-  if (!profile) return null
 
   function handleSave() {
     setSaving(true)

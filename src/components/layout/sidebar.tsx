@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import {
   LayoutDashboard, CalendarDays, ClipboardList, BookOpen,
   Code2, FolderKanban, BarChart3, Calendar, Target, Settings, Zap, AlertTriangle,

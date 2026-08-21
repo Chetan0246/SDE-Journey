@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useCallback } from "react"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -285,12 +285,8 @@ export function getAllLoggedDays(): DailyPlan[] {
 // ─── useStore hook ────────────────────────────────────────────────────────────
 
 export function useStore<T>(key: string, defaultValue: T): [T, (v: T) => void] {
-  const [value, setValue] = useState<T>(defaultValue)
-
-  useEffect(() => {
-    const stored = readStore<T>(key, defaultValue)
-    setValue(stored)
-  }, [key])
+  // Lazy initializer: reads localStorage once on mount, no extra render
+  const [value, setValue] = useState<T>(() => readStore<T>(key, defaultValue))
 
   const set = useCallback((v: T) => {
     writeStore(key, v)
