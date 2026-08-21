@@ -83,3 +83,25 @@ src/
 All data lives in your browser (`localStorage`). Nothing is sent to any server except AI prompts sent to the Gemini API.
 
 Use **Settings → Export JSON** to back up your data. Use **Import JSON** to restore it on a new device.
+
+## Deployment (Vercel)
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+
+# Set env vars in Vercel dashboard or via CLI:
+vercel env add ACCESS_KEY
+vercel env add GEMINI_API_KEY
+```
+
+Or click:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Chetan0246/SDE-Journey)
+
+> [!IMPORTANT]
+> Never commit `.env.local`. It is already in `.gitignore`.
+> Set `ACCESS_KEY` and `GEMINI_API_KEY` in your Vercel project environment variables.

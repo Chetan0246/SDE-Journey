@@ -1,8 +1,9 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import {
+import { Menu, X,
   LayoutDashboard, CalendarDays, ClipboardList, BookOpen,
   Code2, FolderKanban, BarChart3, Calendar, Target, Settings, Zap, AlertTriangle,
 } from "lucide-react"
@@ -22,13 +23,14 @@ const navItems = [
   { href: "/settings",       label: "Settings",       icon: Settings },
 ]
 
-export function Sidebar() {
+function NavContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname()
-
   return (
-    <aside className="flex h-full w-60 flex-col border-r" style={{ borderColor: "rgba(var(--color-border), 0.3)", backgroundColor: "rgba(var(--color-card), 0.4)", backdropFilter: "blur(8px)" }}>
-      <div className="flex items-center gap-2.5 px-5 py-5 border-b" style={{ borderColor: "rgba(var(--color-border), 0.2)" }}>
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ backgroundColor: "rgba(var(--color-primary), 0.1)" }}>
+    <>
+      <div className="flex items-center gap-2.5 px-5 py-5 border-b"
+        style={{ borderColor: "rgba(var(--color-border), 0.2)" }}>
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg"
+          style={{ backgroundColor: "rgba(var(--color-primary), 0.1)" }}>
           <Zap className="h-4 w-4" style={{ color: "var(--color-primary)" }} />
         </div>
         <div>
@@ -36,7 +38,6 @@ export function Sidebar() {
           <p className="text-[10px]" style={{ color: "var(--color-muted-foreground)" }}>2027 Placement Tracker</p>
         </div>
       </div>
-
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-4">
         {navItems.map(({ href, label, icon: Icon, accent }) => {
           const isActive = pathname === href || (href !== "/dashboard" && pathname.startsWith(href))
@@ -44,6 +45,7 @@ export function Sidebar() {
             <Link
               key={href}
               href={href}
+              onClick={onNavigate}
               id={`nav-${label.toLowerCase().replace(/\s+/g, "-")}`}
               className={cn("nav-item", isActive ? "nav-item-active" : "nav-item-inactive")}
               style={accent && !isActive ? { color: "hsl(0 84% 70%)" } : {}}
@@ -55,6 +57,53 @@ export function Sidebar() {
           )
         })}
       </nav>
-    </aside>
+    </>
+  )
+}
+
+export function Sidebar() {
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  return (
+    <>
+      {/* Mobile top bar */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 py-3 border-b"
+        style={{ backgroundColor: "var(--color-card)", borderColor: "var(--color-border)" }}>
+        <div className="flex items-center gap-2">
+          <Zap className="h-5 w-5" style={{ color: "var(--color-primary)" }} />
+          <span className="text-sm font-semibold">SDE Journey</span>
+        </div>
+        <button onClick={() => setMobileOpen(true)} className="p-1.5 rounded-lg"
+          style={{ backgroundColor: "var(--color-accent)" }} id="mobile-menu-btn"
+          aria-label="Open menu">
+          <Menu className="h-5 w-5" />
+        </button>
+      </div>
+
+      {/* Mobile drawer overlay */}
+      {mobileOpen && (
+        <div className="lg:hidden fixed inset-0 z-50 flex">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setMobileOpen(false)} />
+          {/* Drawer */}
+          <div className="relative flex w-64 flex-col border-r animate-slide-up"
+            style={{ backgroundColor: "var(--color-card)", borderColor: "var(--color-border)" }}>
+            <button onClick={() => setMobileOpen(false)} className="absolute top-3 right-3 p-1.5 rounded-lg"
+              style={{ backgroundColor: "var(--color-accent)", color: "var(--color-muted-foreground)" }}
+              id="close-menu-btn" aria-label="Close menu">
+              <X className="h-4 w-4" />
+            </button>
+            <NavContent onNavigate={() => setMobileOpen(false)} />
+          </div>
+        </div>
+      )}
+
+      {/* Desktop sidebar */}
+      <aside className="hidden lg:flex h-full w-60 flex-col border-r"
+        style={{ borderColor: "rgba(var(--color-border), 0.3)", backgroundColor: "rgba(var(--color-card), 0.4)", backdropFilter: "blur(8px)" }}>
+        <NavContent />
+      </aside>
+    </>
   )
 }

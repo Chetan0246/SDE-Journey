@@ -5,7 +5,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="flex h-screen overflow-hidden" style={{ backgroundColor: "var(--color-background)" }}>
       <Sidebar />
       <div className="flex flex-1 flex-col overflow-hidden">
-        <main className="flex-1 overflow-y-auto">
+        {/* pt-14 on mobile to clear the fixed topbar; hidden on lg */}
+        <main className="flex-1 overflow-y-auto pt-14 lg:pt-0">
           {children}
         </main>
       </div>
