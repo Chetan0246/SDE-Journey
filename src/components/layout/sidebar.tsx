@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation"
 import { Menu, X,
   LayoutDashboard, CalendarDays, ClipboardList, BookOpen,
   Code2, FolderKanban, BarChart3, Calendar, Target, Settings, Zap, AlertTriangle,
+  Map, Clock,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -14,8 +15,10 @@ const navItems = [
   { href: "/plan",           label: "Plan My Day",    icon: CalendarDays },
   { href: "/log",            label: "Daily Log",      icon: ClipboardList },
   { href: "/reflect",        label: "Reflect",        icon: BookOpen },
+  { href: "/schedule",       label: "Schedule",       icon: Clock },
   { href: "/brutal-reality", label: "Brutal Reality", icon: AlertTriangle, accent: true },
   { href: "/dsa",            label: "DSA Tracker",    icon: Code2 },
+  { href: "/roadmap",        label: "Roadmap",        icon: Map },
   { href: "/projects",       label: "Projects",       icon: FolderKanban },
   { href: "/analytics",      label: "Analytics",      icon: BarChart3 },
   { href: "/calendar",       label: "History",        icon: Calendar },
